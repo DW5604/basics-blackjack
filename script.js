@@ -1,4 +1,6 @@
 var currentGameMode = "deal";
+var playerCards = [];
+var dealerCards = [];
 
 // Create Deck
 var makeDeck = function () {
@@ -35,7 +37,7 @@ var makeDeck = function () {
 var cardDeck = makeDeck();
 console.log(cardDeck);
 
-// Shuffle Cards
+// Shuffle Deck
 var getRandomIndex = function (max) {
   return Math.floor(Math.random() * max);
 };
@@ -53,30 +55,87 @@ var shuffleCards = function () {
   return cardDeck;
 };
 
-var findWinner = function (sumOfDealerCards, sumOfPlayerCards) {
-  var shuffledDeck = shuffleCards(cardDeck);
-  console.log(shuffledDeck);
-  // Deal Cards
-  var dealerCard1 = shuffledDeck.pop();
-  var dealerCard2 = shuffledDeck.pop();
-  var playerCard1 = shuffledDeck.pop();
-  var playerCard2 = shuffledDeck.pop();
+var shuffledDeck = shuffleCards(cardDeck);
+console.log(shuffledDeck);
 
+// Dealing Cards Function
+var playerCard1 = playerCards.push(shuffledDeck.pop());
+var playerCard2 = playerCards.push(shuffledDeck.pop());
+console.log(playerCards);
+var dealerCard1 = dealerCards.push(shuffledDeck.pop());
+var dealerCard2 = dealerCards.push(shuffledDeck.pop());
+console.log(dealerCards);
+
+// Sum of Player Cards
+var returnSumofPlayerCards = function () {
+  var index = 0;
+  var sumOfPlayerCards = 0;
+  var playerCardsLength = playerCards.length;
+  while (index < playerCardsLength) {
+    var currentPlayerCard = playerCards[index];
+    if (
+      currentPlayerCard.name == "jack" ||
+      currentPlayerCard.name == "queen" ||
+      currentPlayerCard.name == "king"
+    ) {
+      sumOfPlayerCards = sumOfPlayerCards + 10;
+    } else {
+      sumOfPlayerCards = sumOfPlayerCards + currentPlayerCard.rank;
+    }
+    index = index + 1;
+  }
+  console.log(sumOfPlayerCards);
+  return sumOfPlayerCards;
+};
+
+// Sum of Dealer Cards
+var returnSumOfDealerCards = function () {
+  var index = 0;
+  var dealerCardsLength = dealerCards.length;
+  var sumOfDealerCards = 0;
+  while (index < dealerCardsLength) {
+    var currentDealerCard = dealerCards[index];
+    if (
+      currentDealerCard.name == "jack" ||
+      currentDealerCard.name == "queen" ||
+      currentDealerCard.name == "king"
+    ) {
+      currentDealerCard = currentDealerCard + 10;
+    } else {
+      sumOfDealerCards = sumOfDealerCards + currentDealerCard.rank;
+    }
+    index = index + 1;
+  }
+  console.log(sumOfDealerCards);
+  return sumOfDealerCards;
+};
+
+//
+
+var findWinner = function (dealerCardSum, playerCardSum) {
   // Winner is dependant on sum of card rank
-  var sumOfPlayerCards = playerCard1.rank + playerCard2.rank;
-  var sumOfDealerCards = dealerCard1.rank + dealerCard2.rank;
+  var playerCardSum = returnSumofPlayerCards();
+  console.log(playerCardSum);
+  var dealerCardSum = returnSumOfDealerCards();
+  console.log(dealerCardSum);
 
-  myOutputValue = `Player hand: ${playerCard1.name} of ${playerCard1.suit}, ${playerCard2.name} of ${playerCard2.suit}. Dealer hand: ${dealerCard1.name} of ${dealerCard1.suit}, ${dealerCard2.name} of ${dealerCard2.suit}`;
+  var returnPlayerCard1 = playerCards[0];
+  var returnPlayerCard2 = playerCards[1];
+  var returnDealerCard1 = dealerCards[0];
+  var returnDealerCard2 = dealerCards[1];
 
-  if (sumOfDealerCards == sumOfPlayerCards) {
+  myOutputValue = `Player hand: ${returnPlayerCard1.name} of ${returnPlayerCard1.suit}, ${returnPlayerCard2.name} of ${returnPlayerCard2.suit}. Dealer hand: ${returnDealerCard1.name} of ${returnDealerCard1.suit}, ${returnDealerCard2.name} of ${returnDealerCard2.suit}`;
+
+  //Conditions
+  if (dealerCardSum == playerCardSum) {
     myOutputValue = myOutputValue + `. It's a tie!`;
-  } else if (sumOfDealerCards == 21) {
+  } else if (dealerCardSum == 21) {
     myOutputValue = myOutputValue + `. Dealer wins by Blackjack.`;
-  } else if (sumOfPlayerCards == 21) {
+  } else if (playerCardSum == 21) {
     myOutputValue = myOutputValue + `. Player wins by Blackjack.`;
-  } else if (sumOfDealerCards > sumOfPlayerCards) {
+  } else if (dealerCardSum > playerCardSum) {
     myOutputValue = myOutputValue + `. Dealer wins with higher hand total.`;
-  } else if (sumOfPlayerCards > sumOfDealerCards) {
+  } else if (playerCardSum > dealerCardSum) {
     myOutputValue = myOutputValue + `. Player wins with higher hand total.`;
   }
   return myOutputValue;
