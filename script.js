@@ -66,8 +66,30 @@ var dealerCard1 = dealerCards.push(shuffledDeck.pop());
 var dealerCard2 = dealerCards.push(shuffledDeck.pop());
 console.log(dealerCards);
 
+// Show Player's Cards
+var returnPlayersHand = function (playerCards) {
+  var index = 0;
+  var noOfPlayerCards = playerCards.length;
+  while (index < noOfPlayerCards) {
+    myOutputValue = `Player drew ${playerCards[index].name} of ${playerCards[index].suit}. `;
+    index = index + 1;
+  }
+  return myOutputValue;
+};
+
+// Show Dealer's Cards
+var returnDealersHand = function (dealerCards) {
+  var index = 0;
+  var noOfDealerCards = dealerCards.length;
+  while (index < noOfDealerCards) {
+    myOutputValue = `Player drew ${dealerCards[index].name} of ${dealerCards[index].suit}. `;
+    index = index + 1;
+  }
+  return myOutputValue;
+};
+
 // Sum of Player Cards
-var returnSumofPlayerCards = function () {
+var returnSumofPlayerCards = function (playerCards) {
   var index = 0;
   var sumOfPlayerCards = 0;
   var playerCardsLength = playerCards.length;
@@ -89,7 +111,7 @@ var returnSumofPlayerCards = function () {
 };
 
 // Sum of Dealer Cards
-var returnSumOfDealerCards = function () {
+var returnSumOfDealerCards = function (dealerCards) {
   var index = 0;
   var dealerCardsLength = dealerCards.length;
   var sumOfDealerCards = 0;
@@ -110,13 +132,11 @@ var returnSumOfDealerCards = function () {
   return sumOfDealerCards;
 };
 
-//
-
-var findWinner = function (dealerCardSum, playerCardSum) {
+var initialHand = function (dealerCardSum, playerCardSum) {
   // Winner is dependant on sum of card rank
-  var playerCardSum = returnSumofPlayerCards();
+  var playerCardSum = returnSumofPlayerCards(playerCards);
   console.log(playerCardSum);
-  var dealerCardSum = returnSumOfDealerCards();
+  var dealerCardSum = returnSumOfDealerCards(dealerCards);
   console.log(dealerCardSum);
 
   var returnPlayerCard1 = playerCards[0];
@@ -124,23 +144,39 @@ var findWinner = function (dealerCardSum, playerCardSum) {
   var returnDealerCard1 = dealerCards[0];
   var returnDealerCard2 = dealerCards[1];
 
-  myOutputValue = `Player hand: ${returnPlayerCard1.name} of ${returnPlayerCard1.suit}, ${returnPlayerCard2.name} of ${returnPlayerCard2.suit}. Dealer hand: ${returnDealerCard1.name} of ${returnDealerCard1.suit}, ${returnDealerCard2.name} of ${returnDealerCard2.suit}`;
+  myOutputValue = `Player hand: ${returnPlayerCard1.name} of ${returnPlayerCard1.suit}, ${returnPlayerCard2.name} of ${returnPlayerCard2.suit}. Dealer hand: ${returnDealerCard1.name} of ${returnDealerCard1.suit}, ${returnDealerCard2.name} of ${returnDealerCard2.suit}. `;
 
-  //Conditions
-  if (dealerCardSum == playerCardSum) {
-    myOutputValue = myOutputValue + `. It's a tie!`;
+  if ((dealerCardSum == playerCardSum) == 21) {
+    myOutputValue = myOutputValue + `It's a tie`;
   } else if (dealerCardSum == 21) {
-    myOutputValue = myOutputValue + `. Dealer wins by Blackjack.`;
+    myOutputValue = myOutputValue + `Dealer wins by Blackjack.`;
   } else if (playerCardSum == 21) {
-    myOutputValue = myOutputValue + `. Player wins by Blackjack.`;
-  } else if (dealerCardSum > playerCardSum) {
-    myOutputValue = myOutputValue + `. Dealer wins with higher hand total.`;
-  } else if (playerCardSum > dealerCardSum) {
-    myOutputValue = myOutputValue + `. Player wins with higher hand total.`;
+    myOutputValue = myOutputValue + `Player wins by Blackjack.`;
+  } else if (playerCardSum < 21) {
+    myOutputValue =
+      myOutputValue + `Type "hit" or "stand" to continue with the game`;
+  }
+  currentGameMode = "hitorstand";
+  return myOutputValue;
+};
+
+var hitOrStand = function (input) {
+  if (input == `stand`) {
+    myOutputvalue = `You have chosen to stand. It is now the dealer's turn.`;
+  } else if (input == `hit`) {
+    playerCards.push(shuffledDeck.pop());
+    myOutputValue =
+      returnPlayersHand(playerCards) +
+      `Sum of player cards is now ${returnSumofPlayerCards(playerCards)}.`;
   }
   return myOutputValue;
 };
 
-var main = function () {
-  return findWinner();
+var main = function (input) {
+  if (currentGameMode == "deal") {
+    return initialHand(playerCards, dealerCards);
+  }
+  if (currentGameMode == "hitorstand") {
+    return hitOrStand(input);
+  }
 };
